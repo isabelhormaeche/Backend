@@ -6,10 +6,23 @@ from .database import engine, SessionLocal
 from typing import List, Optional
 import os
 from .database import get_db
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
 
+# TODO Change origin when send to production *************************
+origin = [
+    'http://localhost:3000'
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origin,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+    )
 
 models.Base.metadata.create_all(engine)
 
@@ -34,7 +47,7 @@ MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2 MB
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@app.post("/upload_image", status_code=status.HTTP_201_CREATED)
+@app.post("api/upload_image", status_code=status.HTTP_201_CREATED)
 async def upload_image(file: UploadFile = File(...)):
     logger.info(f"Received file: {file.filename}")
     if file.content_type not in ALLOWED_IMAGE_TYPES:
@@ -65,9 +78,9 @@ if not os.path.exists('uploadImage'):
 
 # Create location blogs
 
-# TODO añadir validaciones y raise excepciones
+# TODO añadir validaciones y raise excepciones  
 
-@app.post("/create_blog", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog)
+@app.post("api/create_blog", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog)
 async def create_blog(blog: schemas.BlogCreate, db: Session = Depends(get_db)):
     try:
         new_blog = models.Blog(title=blog.title, desc=blog.desc, cat=blog.cat, image=blog.image)
@@ -85,7 +98,7 @@ async def create_blog(blog: schemas.BlogCreate, db: Session = Depends(get_db)):
 
 # Get all location blogs
 
-@app.get("/blog", response_model=List[schemas.ShowBlog])
+@app.get("api/blog", response_model=List[schemas.ShowBlog])
 def get_all(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
@@ -94,7 +107,7 @@ def get_all(db: Session = Depends(get_db)):
 
 # Get location blogs by category
 
-@app.get("/blog/category/{cat}", response_model=list[schemas.ShowBlog])
+@app.get("api/blog/category/{cat}", response_model=list[schemas.ShowBlog])
 def get_by_category(cat: str = None, db: Session = Depends(get_db)):
     blogs =db.query(models.Blog).filter(models.Blog.cat == cat).all()
     if not blogs:
@@ -102,9 +115,10 @@ def get_by_category(cat: str = None, db: Session = Depends(get_db)):
     return blogs
 
 
+### TODO asegurarme que manda blog id***********************************
 # Get one location blog
 
-@app.get("/blog/{id}", status_code=200, response_model=schemas.ShowBlog)
+@app.get("api/blog/{id}", status_code=200, response_model=schemas.ShowBlog)
 def get_one(id, response: Response, db:Session= Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -116,7 +130,7 @@ def get_one(id, response: Response, db:Session= Depends(get_db)):
 
 # Delete one location blog
 
-@app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("api/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete(id, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id ==id)
     if not blog.first():
@@ -132,7 +146,7 @@ def delete(id, db: Session = Depends(get_db)):
 # TODO añadir validaciones y raise excepciones
 
 
-@app.put("/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
+@app.put("api/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
 async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Optional[str] = Form(None), cat: Optional[str] = Form(None), image: Optional[UploadFile] = None, db: Session = Depends(get_db)):
     blog_to_update = db.query(models.Blog).filter(models.Blog.id == blog_id).first()
     
@@ -161,7 +175,7 @@ async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Opt
 
 # Delete all the blogs (TODO: borrar luego porque es para desarrollo solo)
 
-@app.delete("/blogs", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("api/blogs", status_code=status.HTTP_204_NO_CONTENT)
 def delete_all_blogs(db: Session = Depends(get_db)):
     db.query(models.Blog).delete()
     db.commit()
