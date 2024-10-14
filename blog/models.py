@@ -13,3 +13,12 @@ class Blog(Base):
     cat = Column(String, nullable=False)
     #date = Column(DateTime(timezone=True), server_default=func.now())  
     date = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+    # class User(Base):
+    #     __tablename__ = 'users'
+
+    # id = Column(Integer, primary_key=True, index=True)
+    # name = Column(String)
+    # email = Column(String)
+    # password = Column(String)

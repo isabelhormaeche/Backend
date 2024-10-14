@@ -14,8 +14,17 @@ class BlogCreate(BlogBase):
 class ShowBlog(BlogBase):
     id: int
     date: datetime  
+    cat: Optional[str] = None # the category is optional
     
     class Config:
         orm_mode = True
+
+#******************* SCHEMAS FOR THE USER******************
+
+# class User(BaseModel):
+#     name:str
+#     email:str
+#     password:str
+
 
 
