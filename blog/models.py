@@ -15,10 +15,11 @@ class Blog(Base):
     date = Column(DateTime, default=datetime.datetime.utcnow)
 
 
-    # class User(Base):
-    #     __tablename__ = 'users'
 
-    # id = Column(Integer, primary_key=True, index=True)
-    # name = Column(String)
-    # email = Column(String)
-    # password = Column(String)
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
