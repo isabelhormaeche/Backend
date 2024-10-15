@@ -90,7 +90,7 @@ logger = logging.getLogger(__name__)
 # NEW ENDPOINT CREATE POST WITH IMAGE****************************************************************************************
 # TODO añadir validaciones y raise excepciones      ///// AÑADIR  user id y date?????????????
 
-@app.post("/api/create_blog_with_image", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog)
+@app.post("/api/create_blog_with_image", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog, tags=["blogs"])
 async def upload_image(
     title: str = Form(...),
     desc: str = Form(...),
@@ -133,7 +133,7 @@ async def upload_image(
 
 # Merging BOTH: Get all location blogs by category(if any) if none get all:
 
-@app.get("/api/blog", response_model=List[schemas.ShowBlog])
+@app.get("/api/blog", response_model=List[schemas.ShowBlog], tags=["blogs"])
 def get_blogs(cat: Optional[str] = None, db: Session = Depends(get_db)):
     try:
         if cat:
@@ -151,7 +151,7 @@ def get_blogs(cat: Optional[str] = None, db: Session = Depends(get_db)):
 
 # Get one location blog
 
-@app.get("/api/blog/{id}", status_code=200, response_model=schemas.ShowBlog)
+@app.get("/api/blog/{id}", status_code=200, response_model=schemas.ShowBlog, tags=["blogs"])
 def get_one(id, response: Response, db:Session= Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -162,7 +162,7 @@ def get_one(id, response: Response, db:Session= Depends(get_db)):
 
 # Delete one location blog
 
-@app.delete("/api/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/blog/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["blogs"])
 def delete(id, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id ==id)
     if not blog.first():
@@ -179,7 +179,7 @@ def delete(id, db: Session = Depends(get_db)):
 
 # No need ANY DATE pero sí USER ID!!!!!!!!!!!!!!!!!!!!!!!!!!
 # condición de id y udi para editar
-@app.put("/api/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
+@app.put("/api/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog, tags=["blogs"])
 async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Optional[str] = Form(None), cat: Optional[str] = Form(None), image: Optional[UploadFile] = None, db: Session = Depends(get_db)):
     blog_to_update = db.query(models.Blog).filter(models.Blog.id == blog_id).first()
     
@@ -208,7 +208,7 @@ async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Opt
 
 # Delete all the blogs (TODO: borrar luego porque es para desarrollo solo) ********************************
 
-@app.delete("/api/blogs", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/blogs", status_code=status.HTTP_204_NO_CONTENT, tags=["blogs"])
 def delete_all_blogs(db: Session = Depends(get_db)):
     db.query(models.Blog).delete()
     db.commit()
@@ -218,7 +218,7 @@ def delete_all_blogs(db: Session = Depends(get_db)):
 # *******************ENDPOINTS USER ****************************************
 
 # CREATE USER 
-@app.post("/api/user", response_model=schemas.ShowUser)
+@app.post("/api/user", response_model=schemas.ShowUser, tags=["users"])
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
      hashed_password = Hash.bcrypt(request.password)
      new_user = models.User(name=request.name, email=request.email, password=hashed_password)
@@ -229,7 +229,7 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
 
 # GET USER
-@app.get("/api/user/{id}", response_model=schemas.ShowUser)
+@app.get("/api/user/{id}", response_model=schemas.ShowUser, tags=["users"])
 def get_user(id:int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
