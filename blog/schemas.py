@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 class BlogBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=100)
@@ -8,20 +8,12 @@ class BlogBase(BaseModel):
     cat: str = Field(..., min_length=1, max_length=50)
     image: Optional[str] = None  
 
-class BlogCreate(BlogBase):
-    pass
-
-class ShowBlog(BlogBase):
-    id: int
-    date: datetime  
-    cat: Optional[str] = None # the category is optional
+class Blog(BlogBase):
+     class Config:
+         from_attributes = True
     
-    class Config:
-    #     orm_mode = True
 
-#Renamed to from_attributes to more clearly reflect its purpose: to allow the model to be built from object attributes, not just dictionaries
-    
-        from_attributes = True
+
 
 #******************* SCHEMAS FOR THE USER******************
 
@@ -34,11 +26,24 @@ class User(BaseModel):
          from_attributes = True
 
 class ShowUser(BaseModel):
-     name: str
-     email: str
+    id: int
+    name: str
+    email: str
+    # blogs : List[BlogBase] =[]
+    blogs : List[BlogBase] =[]
 # does not show the password
-     class Config:
-         from_attributes = True
+    class Config:
+        from_attributes = True
+
+class ShowBlog(BlogBase):
+    id: int
+    date: datetime  
+    cat: Optional[str] = None 
+    user_id:int
+    owner: ShowUser
+    
+    class Config:
+        from_attributes = True
 
      
 

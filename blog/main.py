@@ -33,6 +33,12 @@ app.add_middleware(
 # Configuración para servir archivos estáticos
 app.mount("/uploadImage", StaticFiles(directory="uploadImage"), name="uploadImage")
 
+# Delete the blog.db file if any (to clean up and begin again creating the tables):
+# db_path = "blog.db"
+# if os.path.exists(db_path):
+#     os.remove(db_path)
+
+# Create all the tables 
 models.Base.metadata.create_all(engine)
 
 def get_db():
@@ -118,7 +124,9 @@ async def upload_image(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
     
     try:
-        new_blog = models.Blog(title=title, desc=desc, cat=cat, image=file_location)
+        # Added user id manually for testing
+        user_id=1  
+        new_blog = models.Blog(title=title, desc=desc, cat=cat, image=file_location, user_id=user_id)
         db.add(new_blog)
         db.commit()
         db.refresh(new_blog)
@@ -237,5 +245,3 @@ def get_user(id:int, db: Session = Depends(get_db)):
     return user
              
 
-
- 
