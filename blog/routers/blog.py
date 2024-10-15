@@ -4,14 +4,16 @@ from .. import schemas, database, models
 from sqlalchemy.orm import Session
 import logging
 
-
-router = APIRouter()
+router = APIRouter(
+    prefix="/blog",
+    tags=['Blogs']
+)
 
 get_db = database.get_db
 
 # GET ALL location blogs BY CATEGORY(if any), if none, get all:
 
-@router.get("/api/blog", response_model=List[schemas.ShowBlog], tags=["blogs"])
+@router.get("/api/blog", response_model=List[schemas.ShowBlog])
 def get_blogs(cat: Optional[str] = None, db: Session = Depends(get_db)):
     try:
         if cat:
@@ -39,7 +41,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@router.post("/api/create_blog_with_image", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog, tags=["blogs"])
+@router.post("/api/create_blog_with_image", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog)
 async def create_blog(
     title: str = Form(...),
     desc: str = Form(...),
@@ -85,7 +87,7 @@ async def create_blog(
 
 # GET ONE LOCATION BLOG
 
-@router.get("/api/blog/{id}", status_code=200, response_model=schemas.ShowBlog, tags=["blogs"])
+@router.get("/api/blog/{id}", status_code=200, response_model=schemas.ShowBlog)
 def get_one(id:int, db:Session= Depends(database.get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -96,7 +98,7 @@ def get_one(id:int, db:Session= Depends(database.get_db)):
 
 # DELETE ONE LOCATON BLOG
 
-@router.delete("/api/blog/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["blogs"])
+@router.delete("/api/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete(id, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id ==id)
     if not blog.first():
@@ -113,7 +115,7 @@ def delete(id, db: Session = Depends(get_db)):
 
 # No need ANY DATE pero sí USER ID!!!!!!!!!!!!!!!!!!!!!!!!!!
 # condición de id y udi para editar
-@router.put("/api/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog, tags=["blogs"])
+@router.put("/api/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
 async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Optional[str] = Form(None), cat: Optional[str] = Form(None), image: Optional[UploadFile] = None, db: Session = Depends(get_db)):
     blog_to_update = db.query(models.Blog).filter(models.Blog.id == blog_id).first()
     
