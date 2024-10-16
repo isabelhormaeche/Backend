@@ -15,7 +15,7 @@ get_db = database.get_db
 
 # CREATE USER 
 @router.post("/", response_model=schemas.ShowUser)
-def create_user(request: schemas.User, db: Session = Depends(get_db)):
+def create_user(request: schemas.User, db: Session = Depends(database.get_db)):
      return user.create_user(request, db)
 
 

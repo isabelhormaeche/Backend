@@ -19,8 +19,6 @@ class BlogUpdate(BaseModel):
     image: Optional[str] = None
     
 
-
-
 #******************* SCHEMAS FOR THE USER******************
 
 class User(BaseModel):

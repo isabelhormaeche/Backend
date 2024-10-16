@@ -5,13 +5,15 @@ from ..hashing import Hash
 
 router = APIRouter(tags=['Authentication'])
 
-@router.post('/login')
+@router.post('api/login')
 def login(request:schemas.Login, db: Session = Depends(database.get_db)):
     try:
         user = db.query(models.User).filter(models.User.email == request.username).first()
+        # CHECK USER    
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Credentials")
         
+        # CHECK PASSWORD
         # Compare request.password(plaintext password provided by the user) and user.password (hash stored in the database)
         if not Hash.verify(request.password, user.password):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password")

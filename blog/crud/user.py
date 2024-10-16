@@ -7,6 +7,11 @@ from ..hashing import Hash
 
 # CREATE USER 
 def create_user(request: schemas.User, db: Session):
+    # CHECK EXISTING USER
+    existing_user = db.query(models.User).filter(models.User.email == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+
 
     try:
         hashed_password = Hash.bcrypt(request.password)
@@ -18,14 +23,6 @@ def create_user(request: schemas.User, db: Session):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
-
-    # hashed_password = Hash.bcrypt(request.password)
-    # new_user = models.User(name=request.name, email=request.email, password=hashed_password)
-    # db.add(new_user)
-    # db.commit()
-    # db.refresh(new_user)
-    # return new_user
-
 
 
 # GET USER 
