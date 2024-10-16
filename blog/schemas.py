@@ -11,6 +11,12 @@ class BlogBase(BaseModel):
 class Blog(BlogBase):
      class Config:
          from_attributes = True
+
+class BlogUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=1, max_length=100)
+    desc: Optional[str] = Field(None, min_length=1, max_length=1000)
+    cat: Optional[str] = Field(None, min_length=1, max_length=50)
+    image: Optional[str] = None
     
 
 

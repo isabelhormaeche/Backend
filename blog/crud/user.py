@@ -3,6 +3,9 @@ from sqlalchemy.orm import Session
 from .. import models
 from ..hashing import Hash
 
+
+
+# CREATE USER 
 def create_user(request, db: Session):
     hashed_password = Hash.bcrypt(request.password)
     new_user = models.User(name=request.name, email=request.email, password=hashed_password)
@@ -11,6 +14,9 @@ def create_user(request, db: Session):
     db.refresh(new_user)
     return new_user
 
+
+
+# GET USER 
 def get_user(id: int, db: Session):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
