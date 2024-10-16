@@ -33,7 +33,6 @@ class ShowUser(BaseModel):
     id: int
     name: str
     email: str
-    # blogs : List[BlogBase] =[]
     blogs : List[BlogBase] =[]
 # does not show the password
     class Config:
@@ -60,12 +59,18 @@ class Login(BaseModel):
 
 
 class Token(BaseModel):
-     access_token: str
-     token_type: str
+    access_token: str
+    token_type: str
+
+
+# class TokenData(BaseModel):
+#     email: Optional[str] = None
 
 
 class TokenData(BaseModel):
-     email: Optional[str] = None
+    email: Optional[str] = None
+    user_id: Optional[int] = None  # added  user id 
+
 
      
 

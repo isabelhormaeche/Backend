@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends, status, HTTPException, Form, File, Uploa
 from sqlalchemy.orm import Session
 import logging
 
-from .. import schemas, database
+from .. import schemas, database, oauth2
 from ..crud import blog
+
 
 router = APIRouter(
     prefix="/api/blogs",
@@ -13,6 +14,8 @@ router = APIRouter(
 
 get_db = database.get_db
 
+
+# *************** Route behind authentication**********************
 
 # CREATE POST (with image)
 # TODO añadir validaciones ***********************AÑADIR  user id y date?????????????
@@ -33,7 +36,8 @@ async def create_blog(
     cat: str = Form(...),
     # file: UploadFile = File(...),
     image: UploadFile = File(...), # changed like frontend
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(oauth2.get_current_user)
 ):
     
      # Validate and process data using schema BlogBase ****
@@ -89,13 +93,17 @@ def get_one(id:int, db:Session= Depends(database.get_db)):
 
 
 
+# *************** Route behind authentication**********************
+
 # DELETE ONE LOCATON BLOG
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete(id, db: Session = Depends(get_db)):
+def delete(id, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     return blog.delete_blog(id, db)
 
 
+
+# *************** Route behind authentication**********************
 
 # UPDATE ONE LOCATION BLOG
 
@@ -104,7 +112,7 @@ def delete(id, db: Session = Depends(get_db)):
 # No need ANY DATE pero sí USER ID!!!!!!!!!!!!!!!!!!!!!!!!!!
 # condición de id y udi para editar
 @router.put("/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
-async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Optional[str] = Form(None), cat: Optional[str] = Form(None), image: Optional[UploadFile] = None, db: Session = Depends(get_db)):
+async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Optional[str] = Form(None), cat: Optional[str] = Form(None), image: Optional[UploadFile] = None, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     
     # Validate and process data using schema BlogUpdate ****
     blog_data = schemas.BlogUpdate(title=title, desc=desc, cat=cat)
