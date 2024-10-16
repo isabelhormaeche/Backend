@@ -51,6 +51,24 @@ class ShowBlog(BlogBase):
     class Config:
         from_attributes = True
 
+
+# Authentication schemas
+
+class Login(BaseModel):
+    username: str
+    password:str
+    class Config:
+        from_attributes = True
+
+
+class Token(BaseModel):
+     access_token: str
+     token_type: str
+
+
+class TokenData(BaseModel):
+     email: Optional[str] = None
+
      
 
      

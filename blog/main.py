@@ -3,9 +3,8 @@ from . import models
 from .database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from .routers import blog, user
+from .routers import blog, user, auth
 # import os
-
 
 app = FastAPI()
 
@@ -33,12 +32,14 @@ app.mount("/uploadImage", StaticFiles(directory="uploadImage"), name="uploadImag
 # if os.path.exists(db_path):
 #     os.remove(db_path)
 
-
 # Create all the tables 
 models.Base.metadata.create_all(engine)
 
+app.include_router(auth.router)
 app.include_router(blog.router)
 app.include_router(user.router)
+
+
 
 
 
