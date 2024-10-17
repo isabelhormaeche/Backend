@@ -18,7 +18,6 @@ get_db = database.get_db
 # *************** Route behind authentication**********************
 
 # CREATE POST (with image)
-# TODO añadir validaciones ***********************AÑADIR  user id y date?????????????
 
 ## Allowed image types and max size:
 ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"]
@@ -65,8 +64,6 @@ async def create_blog(
     
     try:
         user_id=1  # Added user id manually for testing
-        # return blog.create_blog(db, title, desc, cat, file_location, user_id)   ****
-
         return blog.create_blog(db, blog_data.title, blog_data.desc, blog_data.cat, file_location, user_id)
     
     except Exception as e:
@@ -107,10 +104,6 @@ def delete(id, db: Session = Depends(get_db), current_user: schemas.User = Depen
 
 # UPDATE ONE LOCATION BLOG
 
-# TODO añadir validaciones y raise excepciones
-
-# No need ANY DATE pero sí USER ID!!!!!!!!!!!!!!!!!!!!!!!!!!
-# condición de id y udi para editar
 @router.put("/update_blog/{blog_id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
 async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Optional[str] = Form(None), cat: Optional[str] = Form(None), image: Optional[UploadFile] = None, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     
@@ -123,5 +116,4 @@ async def update_blog(blog_id: int, title: Optional[str] = Form(None), desc: Opt
         file_location = f"uploadImage/{image.filename}"
         with open(file_location, "wb") as buffer:
             buffer.write(contents)
-    # return blog.update_blog(blog_id, db, title, desc, cat, file_location)
     return blog.update_blog(blog_id, db, blog_data.title, blog_data.desc, blog_data.cat, file_location)
