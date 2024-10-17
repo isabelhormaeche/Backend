@@ -20,9 +20,9 @@ def login(request:OAuth2PasswordRequestForm = Depends(), db: Session = Depends(d
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password")
         
         # if everythin OK then create TOKEN
-        # access_token = token.create_access_token(data={"sub": user.email})
         access_token = token.create_access_token(data={"sub": user.email, "user_id": user.id})
         return {"access_token": access_token, "token_type": "bearer"}
+
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
