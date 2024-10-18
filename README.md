@@ -20,7 +20,7 @@ Users don't have to be logged in to read the posts, but they do have to be logge
 
 ## How the backend works
 
-The backend is built using Python with FastAPI. The backend is hosted on [MI NUEVA API](https://api) and the database is sql language: [SQLite](https://www.sqlite.org/). The backend is connected to the frontend using axios.
+The backend is built using Python with FastAPI. The backend is hosted on Render, here:[Film Locations FastAPI app](https://filmlocationsapi.onrender.com/docs)) and the database is sql language: [SQLite](https://www.sqlite.org/). The backend is connected to the frontend using axios.
 
 The backend has the following endpoints:
 
