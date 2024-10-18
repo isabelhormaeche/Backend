@@ -7,6 +7,7 @@ from .routers import blog, user, auth
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 origin = [
     
@@ -29,6 +30,10 @@ app.mount("/uploadImage", StaticFiles(directory="uploadImage"), name="uploadImag
 
 # Create all the tables 
 models.Base.metadata.create_all(engine)
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to my Film Locations FastAPI application!"}
 
 app.include_router(auth.router)
 app.include_router(blog.router)
