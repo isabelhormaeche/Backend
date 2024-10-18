@@ -26,21 +26,25 @@ The backend has the following endpoints:
 
 ### POST
 
-*`/api/login` - Login
-*`/api/blogs/` - Create Blog
-*`/api/users/` - Register a new user
+*`/api/login` - **Login**
+
+*`/api/blogs/` - **Create Blog**
+
+*`/api/users/` - **Register a new user**
 
 ### GET
 
-*`/api/blogs/` - Get Blogs
-*`/api/blogs/{id}` - Get a single Blog
-*`/api/users/{id}` - Get User´s information (get user´s blogs,etc)
+*`/api/blogs/` - **Get Blogs**
+
+*`/api/blogs/{id}` - **Get a single Blog**
+
+*`/api/users/{id}` - **Get User´s information** (get user´s blogs,etc)
 
 ### PUT
-*`/api/blogs/update_blog/{blog_id}` - Edit Blog
+*`/api/blogs/update_blog/{blog_id}` - **Edit Blog**
 
 ### DELETE
-*`/api/blogs/{id}` - Delete Blog
+*`/api/blogs/{id}` - **Delete Blog**
 
 
 ## Who can use the backend?
